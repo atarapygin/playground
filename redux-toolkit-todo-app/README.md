@@ -1,1 +1,1 @@
-Todo app based on react and redux toolkit + tests
+Todo app based on react and redux toolkit
