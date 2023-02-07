@@ -1,0 +1,1 @@
+Simple rtk query app
