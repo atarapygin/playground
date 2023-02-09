@@ -1,9 +1,10 @@
 import React from 'react';
 import { useAppSelector } from "../hook";
+import { selectTodos } from '../store/selectors';
 import TodoItem from './TodoItem';
 
 const TodoList: React.FC = () => {
-  const todos = useAppSelector(state => state.todos.list);
+  const todos = useAppSelector(selectTodos);
 
   return (
     <ul>

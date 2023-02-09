@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction, AnyAction } from "@reduxjs/toolkit";
 
-type Todo = {
+export type Todo = {
   id: string,
   title: string,
   completed: boolean,
 };
 
-type TodosState = {
+export type TodosState = {
   list: Todo[],
   loading: boolean,
   error: string | null,
@@ -104,31 +104,31 @@ export const toggleStatus = createAsyncThunk<Todo, string, { rejectValue: string
   }
 );
 
-const initialStates: TodosState = {
+export const initialStates: TodosState = {
   list: [],
   loading: false,
   error: null,
 };
 
 // Reducer
-const todoSlice = createSlice({
+export const todoReducer = createSlice({
   name: "todos",
   initialState: initialStates,
   reducers: {
-    // addTodo(state, action: PayloadAction<Todo>) {
-    //   state.list.push(action.payload);
-    // },
-    // toggleComplete(state, action: PayloadAction<string>) {
-    //  const toggledTodo = state.list.find(
-    //    (todo) => todo.id === action.payload.id
-    //  );
-    //  if (toggledTodo) {
-    //    toggledTodo.completed = !toggledTodo.completed;
-    //  }
-    // },
-    // removeTodo(state, action: PayloadAction<string>) {
-    //   state.list = state.list.filter((todo) => todo.id !== action.payload);
-    // },
+    addTodo(state, action: PayloadAction<Todo>) {
+      state.list.push(action.payload);
+    },
+    toggleComplete(state, action: PayloadAction<string>) {
+     const toggledTodo = state.list.find(
+       (todo) => todo.id === action.payload
+     );
+     if (toggledTodo) {
+       toggledTodo.completed = !toggledTodo.completed;
+     }
+    },
+    removeTodo(state, action: PayloadAction<string>) {
+      state.list = state.list.filter((todo) => todo.id !== action.payload);
+    },
   },
   extraReducers: builder => {
     builder
@@ -167,7 +167,9 @@ const todoSlice = createSlice({
   },
 });
 
-export default todoSlice.reducer;
+export const { addTodo, toggleComplete, removeTodo } = todoReducer.actions;
+
+export default todoReducer.reducer;
 
 // Helpers
 function isError(action: AnyAction) {
