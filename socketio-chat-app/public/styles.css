@@ -94,7 +94,7 @@ input {
   list-style-type: none; margin: 0; padding: 0;
   color: #3B4048;
   max-height: 85%;
-  overflow: scroll;
+  height: 100%;
 }
 
 #messages li .user-message{
