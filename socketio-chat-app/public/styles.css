@@ -93,8 +93,10 @@ input {
 #messages {
   list-style-type: none; margin: 0; padding: 0;
   color: #3B4048;
-  max-height: 85%;
+  max-height: 80%;
   height: 100%;
+  overflow-y: auto;
+  margin-top: 20px;
 }
 
 #messages li .user-message{

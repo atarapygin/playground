@@ -1,4 +1,12 @@
 function joinNs(endpoint) {
+  if (nsSocket) {
+    // check to see if nsSocket is connected
+    nsSocket.close();
+    // remove the event listener before it's added againe
+    document
+      .getElementById("user-input")
+      .removeEventListener("submit", formSubmition);
+  }
   nsSocket = io(`http://localhost:9000${endpoint}`);
 
   nsSocket.on("nsRoomLoad", (nsRooms) => {
@@ -7,13 +15,13 @@ function joinNs(endpoint) {
 
     nsRooms.forEach((room) => {
       const glpyh = room.privateRoom ? "lock" : "globe";
-      roomList.innerHTML += `<li key="${room.roomId}" class="room"><span class="glyphicon glyphicon-${glpyh}"></span>${room.roomTitle}</li>`;
+      roomList.innerHTML += `<li class="room"><span class="glyphicon glyphicon-${glpyh}"></span>${room.roomTitle}</li>`;
     });
     // add click listener to each room
     let roomNodes = document.getElementsByClassName("room");
     Array.from(roomNodes).forEach((elem) => {
       elem.addEventListener("click", (e) => {
-        console.log(`Someone clicked on ${e.target.innerText}`);
+        joinRoom(e.target.innerText);
       });
     });
 
@@ -24,13 +32,33 @@ function joinNs(endpoint) {
   });
 
   nsSocket.on("messageToClients", (msg) => {
-    document.querySelector("#messages").innerHTML += `<li>${msg.text}</li>`;
+    const newMsg = buildHTML(msg);
+    document.getElementById("messages").innerHTML += newMsg;
   });
 
-  document.querySelector("#user-input").addEventListener("submit", (event) => {
-    event.preventDefault();
-    const newMessage = document.querySelector("#user-message").value;
-    nsSocket.emit("newMessageToServer", { text: newMessage });
-    document.querySelector("#user-input").reset();
-  });
+  document
+    .getElementById("user-input")
+    .addEventListener("submit", formSubmition);
+}
+
+function formSubmition(event) {
+  event.preventDefault();
+  const newMessage = document.getElementById("user-message").value;
+  nsSocket.emit("newMessageToServer", { text: newMessage });
+  document.getElementById("user-input").reset();
+}
+
+function buildHTML(msg) {
+  const convertedDate = new Date(msg.time).toLocaleString();
+  return `
+    <li>
+      <div class="user-image">
+        <img src="${msg.avatar}" />
+      </div>
+      <div class="user-message">
+        <div class="user-name-time">${msg.username} <span>${convertedDate}</span></div>
+        <div class="message-text">${msg.text}</div>
+      </div>
+    </li>
+  `;
 }
